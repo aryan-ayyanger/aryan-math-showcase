@@ -14,3 +14,5 @@ export const achievements: Achievement[] = [
   { title: 'University of Houston Physics Contest — 2nd', icon: Atom, color: 'from-green-500 to-emerald-500' },
   { title: 'TMSCA State Contest — 5th', icon: Target, color: 'from-orange-500 to-red-500' }
 ];
+
+// Cache-busting comment for Vercel redeploy
