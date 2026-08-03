@@ -8,6 +8,7 @@ const countApiNamespace = 'aryan-ayyanger-math-showcase';
 const countedArticleViewsSessionKey = 'aa_article_views_counted_session';
 const articleViewCooldownKey = 'aa_article_view_last_hit_at';
 const articleViewCooldownMs = 24 * 60 * 60 * 1000;
+const countApiHosts = ['https://api.countapi.xyz', 'https://countapi.xyz'];
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -123,6 +124,26 @@ export default function ArticlesPage(): JSX.Element {
   const getArticleCounterKey = (title: string): string =>
     `article-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
 
+  const requestArticleCount = async (mode: 'get' | 'hit', key: string): Promise<number> => {
+    for (const host of countApiHosts) {
+      try {
+        const response = await fetch(`${host}/${mode}/${countApiNamespace}/${key}`);
+        if (!response.ok) {
+          continue;
+        }
+
+        const data = (await response.json()) as { value?: number };
+        if (typeof data.value === 'number') {
+          return data.value;
+        }
+      } catch {
+        continue;
+      }
+    }
+
+    throw new Error('CountAPI unavailable');
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -132,14 +153,13 @@ export default function ArticlesPage(): JSX.Element {
         const counts = await Promise.all(
           publishedArticles.map(async (article) => {
             const key = getArticleCounterKey(article.title);
-            const response = await fetch(`https://api.countapi.xyz/get/${countApiNamespace}/${key}`);
 
-            if (!response.ok) {
+            try {
+              const value = await requestArticleCount('get', key);
+              return [article.title, value] as const;
+            } catch {
               return [article.title, 0] as const;
             }
-
-            const data = (await response.json()) as { value?: number };
-            return [article.title, typeof data.value === 'number' ? data.value : 0] as const;
           })
         );
 
@@ -182,22 +202,15 @@ export default function ArticlesPage(): JSX.Element {
         return;
       }
 
+      const value = await requestArticleCount('hit', key);
+
+      setArticleViews((prev) => ({
+        ...prev,
+        [title]: value
+      }));
+
       countedArticleViews.add(key);
       sessionStorage.setItem(countedArticleViewsSessionKey, JSON.stringify(Array.from(countedArticleViews)));
-
-      const response = await fetch(`https://api.countapi.xyz/hit/${countApiNamespace}/${key}`);
-
-      if (!response.ok) {
-        throw new Error('Failed to increment article view count');
-      }
-
-      const data = (await response.json()) as { value?: number };
-      if (typeof data.value === 'number') {
-        setArticleViews((prev) => ({
-          ...prev,
-          [title]: data.value as number
-        }));
-      }
 
       const nextLastHitByArticle = {
         ...lastHitByArticle,

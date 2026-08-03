@@ -9,6 +9,8 @@ const navLinks = [
   { label: 'About Me', to: '/about' },
 ];
 
+const countApiHosts = ['https://api.countapi.xyz', 'https://countapi.xyz'];
+
 export default function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [viewCount, setViewCount] = useState<number>(0);
@@ -20,21 +22,33 @@ export default function Navbar(): JSX.Element {
     const key = 'site-views';
     let isMounted = true;
 
+    const requestCountApi = async (mode: 'get' | 'hit'): Promise<number> => {
+      for (const host of countApiHosts) {
+        try {
+          const response = await fetch(`${host}/${mode}/${namespace}/${key}`);
+          if (!response.ok) {
+            continue;
+          }
+
+          const data = (await response.json()) as { value?: number };
+          if (typeof data.value === 'number') {
+            return data.value;
+          }
+        } catch {
+          continue;
+        }
+      }
+
+      throw new Error('CountAPI unavailable');
+    };
+
     const syncGlobalViews = async (): Promise<void> => {
       try {
         const hasCountedVisit = sessionStorage.getItem(countedVisitKey) === 'true';
-        const endpoint = hasCountedVisit
-          ? `https://api.countapi.xyz/get/${namespace}/${key}`
-          : `https://api.countapi.xyz/hit/${namespace}/${key}`;
+        const value = await requestCountApi(hasCountedVisit ? 'get' : 'hit');
 
-        const response = await fetch(endpoint);
-        if (!response.ok) {
-          throw new Error('Failed to sync views');
-        }
-
-        const data = (await response.json()) as { value?: number };
-        if (typeof data.value === 'number' && isMounted) {
-          setViewCount(data.value);
+        if (isMounted) {
+          setViewCount(value);
         }
 
         if (!hasCountedVisit) {
