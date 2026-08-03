@@ -53,10 +53,11 @@ function TopicCard({ topic }: TopicCardProps): JSX.Element {
 interface ArticleCardProps {
   article: Article;
   viewCount: number;
+  showViews: boolean;
   onRead: (title: string) => Promise<void>;
 }
 
-function ArticleCard({ article, viewCount, onRead }: ArticleCardProps): JSX.Element {
+function ArticleCard({ article, viewCount, showViews, onRead }: ArticleCardProps): JSX.Element {
   const isComingSoon = article.comingSoon;
   
   return (
@@ -75,7 +76,7 @@ function ArticleCard({ article, viewCount, onRead }: ArticleCardProps): JSX.Elem
         </span>
         <div className="text-right">
           {article.readTime && <span className="block text-sm text-slate-500">{article.readTime}</span>}
-          {!isComingSoon && <span className="block text-xs text-slate-400">Views: {viewCount}</span>}
+          {!isComingSoon && showViews && <span className="block text-xs text-slate-400">Views: {viewCount}</span>}
         </div>
       </div>
       
@@ -120,19 +121,27 @@ export default function ArticlesPage(): JSX.Element {
   const coreSubjects: string[] = ['All', 'Number Theory', 'Algebra', 'Combinatorics', 'Geometry'];
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
   const [articleViews, setArticleViews] = useState<Record<string, number>>({});
+  const [articleViewsAvailable, setArticleViewsAvailable] = useState<boolean>(false);
 
   const getArticleCounterKey = (title: string): string =>
     `article-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
 
-  const requestArticleCount = async (mode: 'get' | 'hit', key: string): Promise<number> => {
-    for (const host of countApiHosts) {
+  const requestArticleCount = async (mode: 'get' | 'hit', key: string, keepalive = false): Promise<number> => {
+    const directUrls = countApiHosts.map((host) => `${host}/${mode}/${countApiNamespace}/${key}`);
+    const proxyUrls = countApiHosts.map(
+      (host) => `https://api.allorigins.win/raw?url=${encodeURIComponent(`${host}/${mode}/${countApiNamespace}/${key}`)}`
+    );
+    const urlsToTry = [...directUrls, ...proxyUrls];
+
+    for (const url of urlsToTry) {
       try {
-        const response = await fetch(`${host}/${mode}/${countApiNamespace}/${key}`);
+        const response = await fetch(url, { keepalive });
         if (!response.ok) {
           continue;
         }
 
-        const data = (await response.json()) as { value?: number };
+        const payload = await response.text();
+        const data = JSON.parse(payload) as { value?: number };
         if (typeof data.value === 'number') {
           return data.value;
         }
@@ -150,12 +159,14 @@ export default function ArticlesPage(): JSX.Element {
     const loadGlobalViews = async (): Promise<void> => {
       try {
         const publishedArticles = articles.filter((article) => !article.comingSoon);
+        let hasAnySuccessfulFetch = false;
         const counts = await Promise.all(
           publishedArticles.map(async (article) => {
             const key = getArticleCounterKey(article.title);
 
             try {
               const value = await requestArticleCount('get', key);
+              hasAnySuccessfulFetch = true;
               return [article.title, value] as const;
             } catch {
               return [article.title, 0] as const;
@@ -168,9 +179,11 @@ export default function ArticlesPage(): JSX.Element {
         }
 
         setArticleViews(Object.fromEntries(counts));
+        setArticleViewsAvailable(hasAnySuccessfulFetch);
       } catch {
         if (isMounted) {
           setArticleViews({});
+          setArticleViewsAvailable(false);
         }
       }
     };
@@ -202,12 +215,13 @@ export default function ArticlesPage(): JSX.Element {
         return;
       }
 
-      const value = await requestArticleCount('hit', key);
+      const value = await requestArticleCount('hit', key, true);
 
       setArticleViews((prev) => ({
         ...prev,
         [title]: value
       }));
+      setArticleViewsAvailable(true);
 
       countedArticleViews.add(key);
       sessionStorage.setItem(countedArticleViewsSessionKey, JSON.stringify(Array.from(countedArticleViews)));
@@ -218,7 +232,7 @@ export default function ArticlesPage(): JSX.Element {
       };
       localStorage.setItem(articleViewCooldownKey, JSON.stringify(nextLastHitByArticle));
     } catch {
-      // Ignore remote counter failures to avoid displaying misleading increments.
+      setArticleViewsAvailable(false);
     }
   };
 
@@ -274,6 +288,7 @@ export default function ArticlesPage(): JSX.Element {
                 key={article.title}
                 article={article}
                 viewCount={articleViews[article.title] ?? 0}
+                showViews={articleViewsAvailable}
                 onRead={handleArticleRead}
               />
             ))}

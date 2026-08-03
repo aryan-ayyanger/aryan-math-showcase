@@ -13,7 +13,7 @@ const countApiHosts = ['https://api.countapi.xyz', 'https://countapi.xyz'];
 
 export default function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [viewCount, setViewCount] = useState<number>(0);
+  const [viewCount, setViewCount] = useState<number | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -23,14 +23,21 @@ export default function Navbar(): JSX.Element {
     let isMounted = true;
 
     const requestCountApi = async (mode: 'get' | 'hit'): Promise<number> => {
-      for (const host of countApiHosts) {
+      const directUrls = countApiHosts.map((host) => `${host}/${mode}/${namespace}/${key}`);
+      const proxyUrls = countApiHosts.map(
+        (host) => `https://api.allorigins.win/raw?url=${encodeURIComponent(`${host}/${mode}/${namespace}/${key}`)}`
+      );
+      const urlsToTry = [...directUrls, ...proxyUrls];
+
+      for (const url of urlsToTry) {
         try {
-          const response = await fetch(`${host}/${mode}/${namespace}/${key}`);
+          const response = await fetch(url);
           if (!response.ok) {
             continue;
           }
 
-          const data = (await response.json()) as { value?: number };
+          const payload = await response.text();
+          const data = JSON.parse(payload) as { value?: number };
           if (typeof data.value === 'number') {
             return data.value;
           }
@@ -56,7 +63,7 @@ export default function Navbar(): JSX.Element {
         }
       } catch {
         if (isMounted) {
-          setViewCount(0);
+          setViewCount(null);
         }
       }
     };
@@ -96,7 +103,7 @@ export default function Navbar(): JSX.Element {
                 {link.label}
               </Link>
             ))}
-            <span className="text-xs text-slate-500">Views: {viewCount}</span>
+            {viewCount !== null && <span className="text-xs text-slate-500">Views: {viewCount}</span>}
           </div>
 
           {/* Mobile Menu Button */}
@@ -130,7 +137,7 @@ export default function Navbar(): JSX.Element {
                 {link.label}
               </Link>
             ))}
-            <div className="pt-2 text-xs text-slate-500">Views: {viewCount}</div>
+            {viewCount !== null && <div className="pt-2 text-xs text-slate-500">Views: {viewCount}</div>}
           </motion.div>
         )}
       </div>
