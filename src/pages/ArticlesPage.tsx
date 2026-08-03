@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, ArrowRight, GraduationCap } from 'lucide-react';
 import { articles, Article } from '../data/articles';
 import { topics, MathTopic } from '../data/topics';
-
-const countApiNamespace = 'aryan-ayyanger-math-showcase';
-const countedArticleViewsSessionKey = 'aa_article_views_counted_session';
-const articleViewCooldownKey = 'aa_article_view_last_hit_at';
-const articleViewCooldownMs = 24 * 60 * 60 * 1000;
-const countApiHosts = ['https://api.countapi.xyz', 'https://countapi.xyz'];
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -52,12 +46,9 @@ function TopicCard({ topic }: TopicCardProps): JSX.Element {
 
 interface ArticleCardProps {
   article: Article;
-  viewCount: number;
-  showViews: boolean;
-  onRead: (title: string) => Promise<void>;
 }
 
-function ArticleCard({ article, viewCount, showViews, onRead }: ArticleCardProps): JSX.Element {
+function ArticleCard({ article }: ArticleCardProps): JSX.Element {
   const isComingSoon = article.comingSoon;
   
   return (
@@ -76,7 +67,6 @@ function ArticleCard({ article, viewCount, showViews, onRead }: ArticleCardProps
         </span>
         <div className="text-right">
           {article.readTime && <span className="block text-sm text-slate-500">{article.readTime}</span>}
-          {!isComingSoon && showViews && <span className="block text-xs text-slate-400">Views: {viewCount}</span>}
         </div>
       </div>
       
@@ -106,7 +96,6 @@ function ArticleCard({ article, viewCount, showViews, onRead }: ArticleCardProps
           href={article.link}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => onRead(article.title)}
           className="inline-flex items-center gap-2 text-blue-600 font-medium text-sm hover:gap-3 transition-all"
         >
           Read Article
@@ -120,121 +109,6 @@ function ArticleCard({ article, viewCount, showViews, onRead }: ArticleCardProps
 export default function ArticlesPage(): JSX.Element {
   const coreSubjects: string[] = ['All', 'Number Theory', 'Algebra', 'Combinatorics', 'Geometry'];
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
-  const [articleViews, setArticleViews] = useState<Record<string, number>>({});
-  const [articleViewsAvailable, setArticleViewsAvailable] = useState<boolean>(false);
-
-  const getArticleCounterKey = (title: string): string =>
-    `article-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
-
-  const requestArticleCount = async (mode: 'get' | 'hit', key: string, keepalive = false): Promise<number> => {
-    const directUrls = countApiHosts.map((host) => `${host}/${mode}/${countApiNamespace}/${key}`);
-    const proxyUrls = countApiHosts.map(
-      (host) => `https://api.allorigins.win/raw?url=${encodeURIComponent(`${host}/${mode}/${countApiNamespace}/${key}`)}`
-    );
-    const urlsToTry = [...directUrls, ...proxyUrls];
-
-    for (const url of urlsToTry) {
-      try {
-        const response = await fetch(url, { keepalive });
-        if (!response.ok) {
-          continue;
-        }
-
-        const payload = await response.text();
-        const data = JSON.parse(payload) as { value?: number };
-        if (typeof data.value === 'number') {
-          return data.value;
-        }
-      } catch {
-        continue;
-      }
-    }
-
-    throw new Error('CountAPI unavailable');
-  };
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadGlobalViews = async (): Promise<void> => {
-      try {
-        const publishedArticles = articles.filter((article) => !article.comingSoon);
-        let hasAnySuccessfulFetch = false;
-        const counts = await Promise.all(
-          publishedArticles.map(async (article) => {
-            const key = getArticleCounterKey(article.title);
-
-            try {
-              const value = await requestArticleCount('get', key);
-              hasAnySuccessfulFetch = true;
-              return [article.title, value] as const;
-            } catch {
-              return [article.title, 0] as const;
-            }
-          })
-        );
-
-        if (!isMounted) {
-          return;
-        }
-
-        setArticleViews(Object.fromEntries(counts));
-        setArticleViewsAvailable(hasAnySuccessfulFetch);
-      } catch {
-        if (isMounted) {
-          setArticleViews({});
-          setArticleViewsAvailable(false);
-        }
-      }
-    };
-
-    void loadGlobalViews();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const handleArticleRead = async (title: string): Promise<void> => {
-    const key = getArticleCounterKey(title);
-
-    try {
-      const now = Date.now();
-      const lastHitByArticle = JSON.parse(localStorage.getItem(articleViewCooldownKey) ?? '{}') as Record<string, number>;
-      const lastHitAt = lastHitByArticle[key] ?? 0;
-
-      if (now - lastHitAt < articleViewCooldownMs) {
-        return;
-      }
-
-      const countedArticleViews = new Set<string>(
-        JSON.parse(sessionStorage.getItem(countedArticleViewsSessionKey) ?? '[]') as string[]
-      );
-
-      if (countedArticleViews.has(key)) {
-        return;
-      }
-
-      const value = await requestArticleCount('hit', key, true);
-
-      setArticleViews((prev) => ({
-        ...prev,
-        [title]: value
-      }));
-      setArticleViewsAvailable(true);
-
-      countedArticleViews.add(key);
-      sessionStorage.setItem(countedArticleViewsSessionKey, JSON.stringify(Array.from(countedArticleViews)));
-
-      const nextLastHitByArticle = {
-        ...lastHitByArticle,
-        [key]: now
-      };
-      localStorage.setItem(articleViewCooldownKey, JSON.stringify(nextLastHitByArticle));
-    } catch {
-      setArticleViewsAvailable(false);
-    }
-  };
 
   const filteredArticles: Article[] = selectedSubject === 'All'
     ? articles
@@ -287,9 +161,6 @@ export default function ArticlesPage(): JSX.Element {
               <ArticleCard
                 key={article.title}
                 article={article}
-                viewCount={articleViews[article.title] ?? 0}
-                showViews={articleViewsAvailable}
-                onRead={handleArticleRead}
               />
             ))}
           </motion.div>

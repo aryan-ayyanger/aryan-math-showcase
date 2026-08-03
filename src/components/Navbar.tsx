@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -9,71 +9,9 @@ const navLinks = [
   { label: 'About Me', to: '/about' },
 ];
 
-const countApiHosts = ['https://api.countapi.xyz', 'https://countapi.xyz'];
-
 export default function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [viewCount, setViewCount] = useState<number | null>(null);
   const location = useLocation();
-
-  useEffect(() => {
-    const countedVisitKey = 'aa_global_visit_counted';
-    const namespace = 'aryan-ayyanger-math-showcase';
-    const key = 'site-views';
-    let isMounted = true;
-
-    const requestCountApi = async (mode: 'get' | 'hit'): Promise<number> => {
-      const directUrls = countApiHosts.map((host) => `${host}/${mode}/${namespace}/${key}`);
-      const proxyUrls = countApiHosts.map(
-        (host) => `https://api.allorigins.win/raw?url=${encodeURIComponent(`${host}/${mode}/${namespace}/${key}`)}`
-      );
-      const urlsToTry = [...directUrls, ...proxyUrls];
-
-      for (const url of urlsToTry) {
-        try {
-          const response = await fetch(url);
-          if (!response.ok) {
-            continue;
-          }
-
-          const payload = await response.text();
-          const data = JSON.parse(payload) as { value?: number };
-          if (typeof data.value === 'number') {
-            return data.value;
-          }
-        } catch {
-          continue;
-        }
-      }
-
-      throw new Error('CountAPI unavailable');
-    };
-
-    const syncGlobalViews = async (): Promise<void> => {
-      try {
-        const hasCountedVisit = sessionStorage.getItem(countedVisitKey) === 'true';
-        const value = await requestCountApi(hasCountedVisit ? 'get' : 'hit');
-
-        if (isMounted) {
-          setViewCount(value);
-        }
-
-        if (!hasCountedVisit) {
-          sessionStorage.setItem(countedVisitKey, 'true');
-        }
-      } catch {
-        if (isMounted) {
-          setViewCount(null);
-        }
-      }
-    };
-
-    void syncGlobalViews();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   return (
     <motion.nav
@@ -103,7 +41,6 @@ export default function Navbar(): JSX.Element {
                 {link.label}
               </Link>
             ))}
-            {viewCount !== null && <span className="text-xs text-slate-500">Views: {viewCount}</span>}
           </div>
 
           {/* Mobile Menu Button */}
@@ -137,7 +74,6 @@ export default function Navbar(): JSX.Element {
                 {link.label}
               </Link>
             ))}
-            {viewCount !== null && <div className="pt-2 text-xs text-slate-500">Views: {viewCount}</div>}
           </motion.div>
         )}
       </div>
