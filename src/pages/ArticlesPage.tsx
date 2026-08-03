@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, ArrowRight, GraduationCap } from 'lucide-react';
 import { articles, Article } from '../data/articles';
 import { topics, MathTopic } from '../data/topics';
+
+const countApiNamespace = 'aryan-ayyanger-math-showcase';
+const countedArticleViewsSessionKey = 'aa_article_views_counted_session';
+const articleViewCooldownKey = 'aa_article_view_last_hit_at';
+const articleViewCooldownMs = 24 * 60 * 60 * 1000;
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -46,9 +51,11 @@ function TopicCard({ topic }: TopicCardProps): JSX.Element {
 
 interface ArticleCardProps {
   article: Article;
+  viewCount: number;
+  onRead: (title: string) => Promise<void>;
 }
 
-function ArticleCard({ article }: ArticleCardProps): JSX.Element {
+function ArticleCard({ article, viewCount, onRead }: ArticleCardProps): JSX.Element {
   const isComingSoon = article.comingSoon;
   
   return (
@@ -65,7 +72,10 @@ function ArticleCard({ article }: ArticleCardProps): JSX.Element {
         <span className={`text-sm ${isComingSoon ? 'text-blue-500 font-medium' : 'text-slate-400'}`}>
           {article.date}
         </span>
-        {article.readTime && <span className="text-sm text-slate-500">{article.readTime}</span>}
+        <div className="text-right">
+          {article.readTime && <span className="block text-sm text-slate-500">{article.readTime}</span>}
+          {!isComingSoon && <span className="block text-xs text-slate-400">Views: {viewCount}</span>}
+        </div>
       </div>
       
       <h3 className={`text-xl font-semibold mb-3 transition-colors ${
@@ -94,6 +104,7 @@ function ArticleCard({ article }: ArticleCardProps): JSX.Element {
           href={article.link}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => onRead(article.title)}
           className="inline-flex items-center gap-2 text-blue-600 font-medium text-sm hover:gap-3 transition-all"
         >
           Read Article
@@ -107,6 +118,96 @@ function ArticleCard({ article }: ArticleCardProps): JSX.Element {
 export default function ArticlesPage(): JSX.Element {
   const coreSubjects: string[] = ['All', 'Number Theory', 'Algebra', 'Combinatorics', 'Geometry'];
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
+  const [articleViews, setArticleViews] = useState<Record<string, number>>({});
+
+  const getArticleCounterKey = (title: string): string =>
+    `article-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadGlobalViews = async (): Promise<void> => {
+      try {
+        const publishedArticles = articles.filter((article) => !article.comingSoon);
+        const counts = await Promise.all(
+          publishedArticles.map(async (article) => {
+            const key = getArticleCounterKey(article.title);
+            const response = await fetch(`https://api.countapi.xyz/get/${countApiNamespace}/${key}`);
+
+            if (!response.ok) {
+              return [article.title, 0] as const;
+            }
+
+            const data = (await response.json()) as { value?: number };
+            return [article.title, typeof data.value === 'number' ? data.value : 0] as const;
+          })
+        );
+
+        if (!isMounted) {
+          return;
+        }
+
+        setArticleViews(Object.fromEntries(counts));
+      } catch {
+        if (isMounted) {
+          setArticleViews({});
+        }
+      }
+    };
+
+    void loadGlobalViews();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleArticleRead = async (title: string): Promise<void> => {
+    const key = getArticleCounterKey(title);
+
+    try {
+      const now = Date.now();
+      const lastHitByArticle = JSON.parse(localStorage.getItem(articleViewCooldownKey) ?? '{}') as Record<string, number>;
+      const lastHitAt = lastHitByArticle[key] ?? 0;
+
+      if (now - lastHitAt < articleViewCooldownMs) {
+        return;
+      }
+
+      const countedArticleViews = new Set<string>(
+        JSON.parse(sessionStorage.getItem(countedArticleViewsSessionKey) ?? '[]') as string[]
+      );
+
+      if (countedArticleViews.has(key)) {
+        return;
+      }
+
+      countedArticleViews.add(key);
+      sessionStorage.setItem(countedArticleViewsSessionKey, JSON.stringify(Array.from(countedArticleViews)));
+
+      const response = await fetch(`https://api.countapi.xyz/hit/${countApiNamespace}/${key}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to increment article view count');
+      }
+
+      const data = (await response.json()) as { value?: number };
+      if (typeof data.value === 'number') {
+        setArticleViews((prev) => ({
+          ...prev,
+          [title]: data.value as number
+        }));
+      }
+
+      const nextLastHitByArticle = {
+        ...lastHitByArticle,
+        [key]: now
+      };
+      localStorage.setItem(articleViewCooldownKey, JSON.stringify(nextLastHitByArticle));
+    } catch {
+      // Ignore remote counter failures to avoid displaying misleading increments.
+    }
+  };
 
   const filteredArticles: Article[] = selectedSubject === 'All'
     ? articles
@@ -156,7 +257,12 @@ export default function ArticlesPage(): JSX.Element {
             className="grid md:grid-cols-2 gap-6"
           >
             {filteredArticles.map((article) => (
-              <ArticleCard key={article.title} article={article} />
+              <ArticleCard
+                key={article.title}
+                article={article}
+                viewCount={articleViews[article.title] ?? 0}
+                onRead={handleArticleRead}
+              />
             ))}
           </motion.div>
 

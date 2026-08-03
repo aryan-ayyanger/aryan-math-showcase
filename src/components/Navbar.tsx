@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -11,7 +11,48 @@ const navLinks = [
 
 export default function Navbar(): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [viewCount, setViewCount] = useState<number>(0);
   const location = useLocation();
+
+  useEffect(() => {
+    const countedVisitKey = 'aa_global_visit_counted';
+    const namespace = 'aryan-ayyanger-math-showcase';
+    const key = 'site-views';
+    let isMounted = true;
+
+    const syncGlobalViews = async (): Promise<void> => {
+      try {
+        const hasCountedVisit = sessionStorage.getItem(countedVisitKey) === 'true';
+        const endpoint = hasCountedVisit
+          ? `https://api.countapi.xyz/get/${namespace}/${key}`
+          : `https://api.countapi.xyz/hit/${namespace}/${key}`;
+
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+          throw new Error('Failed to sync views');
+        }
+
+        const data = (await response.json()) as { value?: number };
+        if (typeof data.value === 'number' && isMounted) {
+          setViewCount(data.value);
+        }
+
+        if (!hasCountedVisit) {
+          sessionStorage.setItem(countedVisitKey, 'true');
+        }
+      } catch {
+        if (isMounted) {
+          setViewCount(0);
+        }
+      }
+    };
+
+    void syncGlobalViews();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <motion.nav
@@ -41,6 +82,7 @@ export default function Navbar(): JSX.Element {
                 {link.label}
               </Link>
             ))}
+            <span className="text-xs text-slate-500">Views: {viewCount}</span>
           </div>
 
           {/* Mobile Menu Button */}
@@ -74,6 +116,7 @@ export default function Navbar(): JSX.Element {
                 {link.label}
               </Link>
             ))}
+            <div className="pt-2 text-xs text-slate-500">Views: {viewCount}</div>
           </motion.div>
         )}
       </div>
