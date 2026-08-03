@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Search, ArrowRight, GraduationCap } from 'lucide-react';
+import { FileText, ArrowRight, GraduationCap } from 'lucide-react';
 import { articles, Article } from '../data/articles';
 import { topics, MathTopic } from '../data/topics';
 
@@ -105,17 +105,12 @@ function ArticleCard({ article }: ArticleCardProps): JSX.Element {
 }
 
 export default function ArticlesPage(): JSX.Element {
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedTag, setSelectedTag] = useState<string>('All');
+  const coreSubjects: string[] = ['All', 'Number Theory', 'Algebra', 'Combinatorics', 'Geometry'];
+  const [selectedSubject, setSelectedSubject] = useState<string>('All');
 
-  const allTags: string[] = ['All', ...new Set(articles.flatMap(a => a.tags))];
-  
-  const filteredArticles = articles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         article.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTag = selectedTag === 'All' || article.tags.includes(selectedTag);
-    return matchesSearch && matchesTag;
-  });
+  const filteredArticles: Article[] = selectedSubject === 'All'
+    ? articles
+    : articles.filter((article) => article.tags.includes(selectedSubject));
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
@@ -137,31 +132,19 @@ export default function ArticlesPage(): JSX.Element {
             </p>
           </motion.div>
 
-          {/* Search and Filter */}
-          <motion.div variants={fadeInUp} className="mb-8 space-y-4">
-            <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-              <input
-                type="text"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
-              />
-            </div>
-            
+          <motion.div variants={fadeInUp} className="mb-8">
             <div className="flex flex-wrap justify-center gap-2">
-              {allTags.map((tag) => (
+              {coreSubjects.map((subject) => (
                 <button
-                  key={tag}
-                  onClick={() => setSelectedTag(tag)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    selectedTag === tag
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                  key={subject}
+                  onClick={() => setSelectedSubject(subject)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
+                    selectedSubject === subject
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
                 >
-                  {tag}
+                  {subject}
                 </button>
               ))}
             </div>
@@ -181,9 +164,9 @@ export default function ArticlesPage(): JSX.Element {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-12"
+              className="text-center py-8"
             >
-              <p className="text-slate-500">No articles found matching your search.</p>
+              <p className="text-slate-500">No articles yet in {selectedSubject}.</p>
             </motion.div>
           )}
 
@@ -200,7 +183,7 @@ export default function ArticlesPage(): JSX.Element {
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-6">
                 <GraduationCap className="text-white" size={28} />
-                <h2 className="text-2xl font-semibold text-white">Math Topics</h2>
+                <h2 className="text-2xl font-semibold text-white">Math Pillars</h2>
                 <span className="px-2 py-1 bg-white/20 text-white rounded-full text-xs font-medium">
                   AMC/AIME Focus
                 </span>

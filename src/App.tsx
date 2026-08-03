@@ -3,7 +3,6 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ArticlesPage from './pages/ArticlesPage';
-import ProjectsPage from './pages/ProjectsPage';
 import ContactPage from './pages/ContactPage';
 
 export default function App(): JSX.Element {
@@ -15,7 +14,6 @@ export default function App(): JSX.Element {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/articles" element={<ArticlesPage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Routes>
       </div>

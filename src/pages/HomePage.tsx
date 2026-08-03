@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { BookOpen, Rocket, Trophy, FileText, User, Sparkles } from 'lucide-react';
+import { BookOpen, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const fadeInUp = {
@@ -15,19 +15,7 @@ const staggerContainer = {
   }
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
-};
-
 export default function HomePage(): JSX.Element {
-  const quickLinks = [
-    { to: '/articles', label: 'Articles', icon: FileText, description: 'Math notes & olympiad techniques', color: 'from-blue-500 to-cyan-500' },
-    { to: '/projects', label: 'Projects', icon: Rocket, description: 'Research & engineering work', color: 'from-purple-500 to-pink-500' },
-    { to: '/achievements', label: 'Achievements', icon: Trophy, description: 'Awards & recognitions', color: 'from-amber-500 to-orange-500' },
-    { to: '/about', label: 'About Me', icon: User, description: 'Learn more about my journey', color: 'from-slate-600 to-slate-700' },
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 pt-16 relative overflow-hidden">
       {/* Background decoration */}
@@ -69,11 +57,12 @@ export default function HomePage(): JSX.Element {
             variants={fadeInUp}
             className="text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed"
           >
-            A collection of mathematical insights, competition strategies, research projects, 
-            and resources for students passionate about competitive mathematics and its real-world applications.
+            A growing collection of mathematical insights, olympiad strategies, guided problem-solving frameworks,
+            and student-friendly resources designed for learners who are serious about competitive mathematics.
+            It covers core olympiad topics from algebraic number theory and inequalities to intermediate combinatorics,
+            functional equations, and geometry through clear notes and worked solutions.
           </motion.p>
 
-          {/* CTA Buttons */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-wrap justify-center gap-4 mb-16"
@@ -85,29 +74,6 @@ export default function HomePage(): JSX.Element {
               <BookOpen size={20} />
               Explore Articles
             </Link>
-          </motion.div>
-
-          {/* Navigation Cards */}
-          <motion.div
-            variants={staggerContainer}
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"
-          >
-            {quickLinks.map((link) => (
-              <motion.div key={link.to} variants={scaleIn}>
-                <Link
-                  to={link.to}
-                  className="group block p-6 bg-white rounded-2xl border border-slate-200 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-300 transition-all duration-300 hover:-translate-y-1"
-                >
-                  <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${link.color} text-white mb-4`}>
-                    <link.icon size={24} />
-                  </div>
-                  <h3 className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                    {link.label}
-                  </h3>
-                  <p className="text-sm text-slate-500 mt-1">{link.description}</p>
-                </Link>
-              </motion.div>
-            ))}
           </motion.div>
         </motion.div>
       </div>

@@ -6,8 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 const navLinks = [
   { label: 'Home', to: '/' },
   { label: 'Articles', to: '/articles' },
-  { label: 'Projects', to: '/projects' },
-  { label: 'About', to: '/about' },
+  { label: 'About Me', to: '/about' },
 ];
 
 export default function Navbar(): JSX.Element {

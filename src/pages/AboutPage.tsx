@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { MapPin, Mail, Linkedin, GraduationCap, Target, Trophy } from 'lucide-react';
+import { MapPin, Mail, Linkedin, GraduationCap, Target, Trophy, Rocket } from 'lucide-react';
 import { profile } from '../data/profile';
 import { achievements, Achievement } from '../data/achievements';
+import { projects, Project } from '../data/projects';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -44,6 +45,48 @@ function AchievementCard({ achievement }: AchievementCardProps): JSX.Element {
             {achievement.title}
           </h3>
         </div>
+      </div>
+    </motion.div>
+  );
+}
+
+interface ProjectCardProps {
+  project: Project;
+}
+
+function ProjectCard({ project }: ProjectCardProps): JSX.Element {
+  const IconComponent = project.icon;
+
+  return (
+    <motion.div
+      variants={scaleIn}
+      whileHover={{ y: -4 }}
+      className="group bg-white p-6 rounded-2xl border border-slate-200 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl text-white">
+          <IconComponent size={22} />
+        </div>
+        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+          project.status === 'Completed'
+            ? 'bg-green-100 text-green-700'
+            : project.status === 'In Progress'
+            ? 'bg-blue-100 text-blue-700'
+            : 'bg-amber-100 text-amber-700'
+        }`}>
+          {project.status}
+        </span>
+      </div>
+      <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-purple-600 transition-colors">
+        {project.title}
+      </h3>
+      <p className="text-slate-500 text-sm mb-4">{project.description}</p>
+      <div className="flex flex-wrap gap-2">
+        {project.tags.map((tag) => (
+          <span key={tag} className="px-2 py-1 bg-slate-100 text-slate-600 rounded-md text-xs">
+            {tag}
+          </span>
+        ))}
       </div>
     </motion.div>
   );
@@ -146,6 +189,28 @@ export default function AboutPage(): JSX.Element {
             >
               {achievements.map((achievement) => (
                 <AchievementCard key={achievement.title} achievement={achievement} />
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Projects & Research */}
+          <motion.div
+            variants={fadeInUp}
+            className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-8"
+          >
+            <h2 className="text-2xl font-semibold text-slate-900 mb-6 flex items-center gap-3">
+              <Rocket className="text-purple-600" size={28} />
+              Projects & Research
+            </h2>
+            <p className="text-slate-500 mb-6">
+              Applying mathematical modeling, data analysis, and engineering to solve real-world challenges.
+            </p>
+            <motion.div
+              variants={staggerContainer}
+              className="grid sm:grid-cols-2 gap-6"
+            >
+              {projects.map((project) => (
+                <ProjectCard key={project.title} project={project} />
               ))}
             </motion.div>
           </motion.div>

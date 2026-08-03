@@ -18,6 +18,22 @@ export const articles: Article[] = [
     link: '/Number_Theory_Divisibility.pdf'
   },
   {
+    title: 'Prime Numbers and Factorization: Intermediate Techniques',
+    description: 'A complete follow-up to Divisibility in Olympiad Number Theory, covering primes, factorization methods, GCD/LCM structure, Legendre\'s formula, factorial exponents, and advanced divisibility techniques for olympiad problem solving.',
+    tags: ['Number Theory', 'Olympiad', 'Prime Factorization'],
+    readTime: '16 min read',
+    date: 'August 2026',
+    link: '/Number_Theory_Second_Handout.pdf'
+  },
+  {
+    title: 'Counting and Combinatorics: Core Concepts Guide',
+    description: 'Includes fundamental counting principles, permutations, inclusion-exclusion, and double counting. A strong starting point for beginners building essential combinatorics skills.',
+    tags: ['Combinatorics', 'Counting', 'Olympiad'],
+    readTime: '14 min read',
+    date: 'August 2026',
+    link: '/Olympiad_Counting_and_Combinatorics_Handout_1.pdf'
+  },
+  {
     title: 'Algebraic Manipulations',
     description: 'Master the art of polynomials, algebraic expressions and other extraneous algebraic topics.',
     tags: ['Algebra', 'Polynomials'],
