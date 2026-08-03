@@ -5,13 +5,12 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ArticlesPage from './pages/ArticlesPage';
 import ContactPage from './pages/ContactPage';
-import { initAnalytics, trackPageView } from './lib/analytics';
+import { trackPageView } from './lib/analytics';
 
 function AnalyticsTracker(): JSX.Element | null {
   const location = useLocation();
 
   useEffect(() => {
-    initAnalytics();
     trackPageView(`${location.pathname}${location.search}`);
   }, [location.pathname, location.search]);
 
