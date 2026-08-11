@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Linkedin, GraduationCap } from 'lucide-react';
 import { profile } from '../data/profile';
+import { useSEO } from '../lib/seo';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -16,6 +17,12 @@ const staggerContainer = {
 };
 
 export default function AboutPage(): JSX.Element {
+  useSEO({
+    title: 'About Aryan Ayyanger | Math Portfolio',
+    description: 'Aryan Ayyanger is a high school student, 2\u00d7 AIME qualifier, and author of olympiad math articles covering Number Theory, Combinatorics, and Algebra.',
+    canonical: 'https://www.aryanayyanger.com/about',
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">

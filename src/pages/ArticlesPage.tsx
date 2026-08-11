@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FileText, ArrowRight, GraduationCap } from 'lucide-react';
 import { articles, Article } from '../data/articles';
 import { topics, MathTopic } from '../data/topics';
+import { useSEO } from '../lib/seo';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -118,6 +119,27 @@ function ArticleCard({ article }: ArticleCardProps): JSX.Element {
 }
 
 export default function ArticlesPage(): JSX.Element {
+  const SITE = 'https://www.aryanayyanger.com';
+  useSEO({
+    title: 'Math Articles & Notes | Aryan Ayyanger',
+    description: 'Browse olympiad mathematics articles by Aryan Ayyanger covering Number Theory, Combinatorics, Algebra, and competition problem-solving strategies.',
+    canonical: `${SITE}/articles`,
+    jsonLd: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'Mathematics Articles by Aryan Ayyanger',
+      url: `${SITE}/articles`,
+      itemListElement: articles
+        .filter((a) => a.indexable)
+        .map((a, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          url: `${SITE}/articles/${a.slug}`,
+          name: a.title,
+        })),
+    }),
+  });
+
   const coreSubjects: string[] = ['All', 'Number Theory', 'Algebra', 'Combinatorics', 'Geometry'];
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
 

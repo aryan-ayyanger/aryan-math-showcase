@@ -76,6 +76,7 @@ export default function ArticlesSection(): JSX.Element {
   const allTags: string[] = ['All', ...new Set(articles.flatMap(a => a.tags))];
   
   const filteredArticles = articles.filter(article => {
+    if (article.comingSoon) return false;
     const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          article.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTag = selectedTag === 'All' || article.tags.includes(selectedTag);

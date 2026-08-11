@@ -3,6 +3,7 @@ export interface Article {
   title: string;
   category: string;
   description: string;
+  topics?: string[];
   tags: string[];
   readTime: string;
   date: string;
@@ -17,7 +18,14 @@ export const articles: Article[] = [
     slug: 'divisibility-in-olympiad-number-theory',
     title: 'Divisibility in Olympiad Number Theory',
     category: 'Number Theory',
-    description: 'Explore fundamental divisibility concepts and their applications in mathematical olympiads, including modular arithmetic and prime factorization techniques.',
+    description: 'Learn key divisibility techniques used in Olympiad number theory, including modular arithmetic, GCD and LCM, Bézout\'s theorem, prime factorization strategies, and competition-style problem solving.',
+    topics: [
+      'Divisibility rules and their proofs',
+      'Modular arithmetic fundamentals',
+      'GCD, LCM, and Bézout\'s theorem',
+      'Prime factorization and its applications',
+      'Competition problem-solving strategies',
+    ],
     tags: ['Number Theory', 'Olympiad', 'Divisibility'],
     readTime: '12 min read',
     date: 'March 2026',
@@ -29,7 +37,14 @@ export const articles: Article[] = [
     slug: 'prime-numbers-and-factorization',
     title: 'Prime Numbers and Factorization: Intermediate Techniques',
     category: 'Number Theory',
-    description: "A complete follow-up to Divisibility in Olympiad Number Theory, covering primes, factorization methods, GCD/LCM structure, Legendre's formula, factorial exponents, and advanced divisibility techniques for olympiad problem solving.",
+    description: 'A follow-up to the Divisibility handout covering prime numbers, integer factorization, GCD/LCM structure, Legendre\'s formula for factorial valuations, and advanced divisibility techniques for competition mathematics.',
+    topics: [
+      'Properties and distribution of prime numbers',
+      'Integer factorization methods',
+      'GCD and LCM structure',
+      'Legendre\'s formula for prime exponents in factorials',
+      'Factorial valuations and advanced divisibility',
+    ],
     tags: ['Number Theory', 'Olympiad', 'Prime Factorization'],
     readTime: '16 min read',
     date: 'August 2026',
@@ -40,8 +55,15 @@ export const articles: Article[] = [
   {
     slug: 'counting-and-combinatorics-core-concepts',
     title: 'Counting and Combinatorics: Core Concepts Guide',
+    description: 'Covers fundamental counting principles, permutations, combinations, inclusion-exclusion, and double counting—building a solid foundation for competition-level combinatorics.',
     category: 'Combinatorics',
-    description: 'Includes fundamental counting principles, permutations, inclusion-exclusion, and double counting. A strong starting point for beginners building essential combinatorics skills.',
+    topics: [
+      'Rule of sum and rule of product',
+      'Permutations and combinations',
+      'Inclusion-exclusion principle',
+      'Double counting techniques',
+      'Foundation for competition combinatorics problems',
+    ],
     tags: ['Combinatorics', 'Counting', 'Olympiad'],
     readTime: '14 min read',
     date: 'August 2026',

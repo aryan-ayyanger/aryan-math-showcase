@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { BookOpen, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSEO } from '../lib/seo';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -16,6 +17,18 @@ const staggerContainer = {
 };
 
 export default function HomePage(): JSX.Element {
+  useSEO({
+    title: 'Aryan Ayyanger | Competition Math Articles & Resources',
+    description: 'A growing collection of olympiad mathematics articles, problem-solving guides, and competition strategies covering Number Theory, Combinatorics, and Algebra.',
+    canonical: 'https://www.aryanayyanger.com/',
+    jsonLd: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Aryan Ayyanger | Math Portfolio',
+      url: 'https://www.aryanayyanger.com',
+    }),
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 pt-16 relative overflow-hidden">
       {/* Background decoration */}

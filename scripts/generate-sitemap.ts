@@ -9,39 +9,32 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const { articles } = await import('../src/data/articles.ts');
 
 const SITE = 'https://www.aryanayyanger.com';
-const today = new Date().toISOString().split('T')[0];
 
-const staticPages = [
-  { url: `${SITE}/`,        changefreq: 'monthly',  priority: '1.0' },
-  { url: `${SITE}/articles`, changefreq: 'weekly',   priority: '0.9' },
-  { url: `${SITE}/about`,   changefreq: 'monthly',  priority: '0.7' },
-  { url: `${SITE}/contact`, changefreq: 'yearly',   priority: '0.5' },
+// lastmod/changefreq/priority are omitted — Google largely ignores them
+// and a build-date lastmod on every page is misleading.
+const staticUrls = [
+  `${SITE}/`,
+  `${SITE}/articles`,
+  `${SITE}/about`,
+  `${SITE}/contact`,
 ];
 
-const articlePages = articles
+const articleUrls = articles
   .filter((a) => a.indexable)
   .flatMap((a) => [
-    { url: `${SITE}/articles/${a.slug}`, changefreq: 'monthly', priority: '0.8' },
-    { url: `${SITE}${a.pdfPath}`,        changefreq: 'yearly',  priority: '0.6' },
+    `${SITE}/articles/${a.slug}`,
+    `${SITE}${a.pdfPath}`,
   ]);
 
-const allPages = [...staticPages, ...articlePages];
+const allUrls = [...staticUrls, ...articleUrls];
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${allPages
-  .map(
-    (p) => `  <url>
-    <loc>${p.url}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${p.changefreq}</changefreq>
-    <priority>${p.priority}</priority>
-  </url>`
-  )
-  .join('\n')}
+${allUrls.map((url) => `  <url>\n    <loc>${url}</loc>\n  </url>`).join('\n')}
 </urlset>
 `;
 
 const outPath = resolve(__dirname, '../dist/sitemap.xml');
 writeFileSync(outPath, xml, 'utf-8');
-console.log(`sitemap.xml written to ${outPath} (${allPages.length} URLs)`);
+console.log(`sitemap.xml written — ${allUrls.length} URLs`);
+
