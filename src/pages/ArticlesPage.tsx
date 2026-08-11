@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FileText, ArrowRight, GraduationCap } from 'lucide-react';
 import { articles, Article } from '../data/articles';
@@ -91,16 +92,26 @@ function ArticleCard({ article }: ArticleCardProps): JSX.Element {
         ))}
       </div>
       
-      {!isComingSoon && article.link && (
-        <a
-          href={article.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-blue-600 font-medium text-sm hover:gap-3 transition-all"
-        >
-          Read Article
-          <ArrowRight size={16} />
-        </a>
+      {!isComingSoon && (
+        <div className="flex items-center gap-4">
+          <Link
+            to={`/articles/${article.slug}`}
+            className="inline-flex items-center gap-2 text-blue-600 font-medium text-sm hover:gap-3 transition-all"
+          >
+            Read Article
+            <ArrowRight size={16} />
+          </Link>
+          {article.pdfPath && (
+            <a
+              href={article.pdfPath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-400 hover:text-slate-600 text-xs transition-colors"
+            >
+              PDF ↗
+            </a>
+          )}
+        </div>
       )}
     </motion.article>
   );

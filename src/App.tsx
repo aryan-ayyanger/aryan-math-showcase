@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ArticlesPage from './pages/ArticlesPage';
+import ArticleDetailPage from './pages/ArticleDetailPage';
 import ContactPage from './pages/ContactPage';
 import { trackPageView } from './lib/analytics';
 
@@ -27,6 +28,7 @@ export default function App(): JSX.Element {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/articles" element={<ArticlesPage />} />
+          <Route path="/articles/:slug" element={<ArticleDetailPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Routes>
       </div>
