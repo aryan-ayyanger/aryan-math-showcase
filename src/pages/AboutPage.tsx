@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
-import { MapPin, Mail, Linkedin, GraduationCap, Target, Trophy, Rocket } from 'lucide-react';
+import { MapPin, Mail, Linkedin, GraduationCap } from 'lucide-react';
 import { profile } from '../data/profile';
-import { achievements, Achievement } from '../data/achievements';
-import { projects, Project } from '../data/projects';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -16,81 +14,6 @@ const staggerContainer = {
     transition: { staggerChildren: 0.1 }
   }
 };
-
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
-};
-
-interface AchievementCardProps {
-  achievement: Achievement;
-}
-
-function AchievementCard({ achievement }: AchievementCardProps): JSX.Element {
-  const IconComponent = achievement.icon;
-  
-  return (
-    <motion.div
-      variants={scaleIn}
-      whileHover={{ scale: 1.02 }}
-      className="group relative p-5 bg-white rounded-2xl border border-slate-200 hover:shadow-lg transition-all duration-300 overflow-hidden"
-    >
-      <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${achievement.color}`} />
-      <div className="flex items-start gap-3">
-        <div className={`p-2 rounded-xl bg-gradient-to-br ${achievement.color} text-white shrink-0`}>
-          <IconComponent size={18} />
-        </div>
-        <div>
-          <h3 className="font-semibold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">
-            {achievement.title}
-          </h3>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-interface ProjectCardProps {
-  project: Project;
-}
-
-function ProjectCard({ project }: ProjectCardProps): JSX.Element {
-  const IconComponent = project.icon;
-
-  return (
-    <motion.div
-      variants={scaleIn}
-      whileHover={{ y: -4 }}
-      className="group bg-white p-6 rounded-2xl border border-slate-200 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl text-white">
-          <IconComponent size={22} />
-        </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-          project.status === 'Completed'
-            ? 'bg-green-100 text-green-700'
-            : project.status === 'In Progress'
-            ? 'bg-blue-100 text-blue-700'
-            : 'bg-amber-100 text-amber-700'
-        }`}>
-          {project.status}
-        </span>
-      </div>
-      <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-purple-600 transition-colors">
-        {project.title}
-      </h3>
-      <p className="text-slate-500 text-sm mb-4">{project.description}</p>
-      <div className="flex flex-wrap gap-2">
-        {project.tags.map((tag) => (
-          <span key={tag} className="px-2 py-1 bg-slate-100 text-slate-600 rounded-md text-xs">
-            {tag}
-          </span>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
 
 export default function AboutPage(): JSX.Element {
   return (
@@ -123,96 +46,16 @@ export default function AboutPage(): JSX.Element {
               <GraduationCap className="text-blue-600" size={28} />
               About Me
             </h2>
-            <p className="text-slate-600 leading-relaxed mb-6">
-              I'm Aryan Ayyanger, a high school student deeply passionate about competitive mathematics 
-              and its powerful applications in solving real-world problems. My journey through math 
-              competitions—from AMC to qualifying for AIME twice—has shaped my analytical thinking 
-              and problem-solving approach.
+            <p className="text-slate-600 leading-relaxed mb-4">
+              I'm Aryan Ayyanger, a high school student deeply passionate about competitive mathematics
+              and its applications in solving real-world problems. Beyond competitions, I use mathematical
+              modeling and data analysis to tackle meaningful challenges in science and engineering.
             </p>
             <p className="text-slate-600 leading-relaxed">
-              Beyond competitions, I explore how mathematical modeling and data analysis can address 
-              meaningful challenges across science and engineering. Through research projects and 
-              scientific fairs, I've applied optimization techniques and algorithmic thinking to 
-              create tangible impact in various domains.
+              Competitively, I'm a 2× AIME Qualifier, 2× MathCON Finalist, Genius Olympiad Science Fair
+              Finalist, and have placed 2nd at both the Texas A&M Math Contest (Power Team) and the
+              University of Houston Physics Contest, among other state-level awards.
             </p>
-          </motion.div>
-
-          {/* What Drives Me */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-8"
-          >
-            <h2 className="text-2xl font-semibold text-slate-900 mb-6 flex items-center gap-3">
-              <Target className="text-purple-600" size={28} />
-              What Drives Me
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="p-4 bg-blue-50 rounded-xl">
-                <h3 className="font-semibold text-slate-900 mb-2">Problem Solving</h3>
-                <p className="text-slate-600 text-sm">
-                  The thrill of tackling challenging olympiad problems and discovering elegant solutions.
-                </p>
-              </div>
-              <div className="p-4 bg-purple-50 rounded-xl">
-                <h3 className="font-semibold text-slate-900 mb-2">Research Impact</h3>
-                <p className="text-slate-600 text-sm">
-                  Using mathematics to create tangible solutions for real-world challenges.
-                </p>
-              </div>
-              <div className="p-4 bg-green-50 rounded-xl">
-                <h3 className="font-semibold text-slate-900 mb-2">Knowledge Sharing</h3>
-                <p className="text-slate-600 text-sm">
-                  Writing articles and notes to help fellow math enthusiasts on their competition journey.
-                </p>
-              </div>
-              <div className="p-4 bg-amber-50 rounded-xl">
-                <h3 className="font-semibold text-slate-900 mb-2">Continuous Learning</h3>
-                <p className="text-slate-600 text-sm">
-                  Exploring new mathematical concepts and their connections to engineering and science.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Achievements */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-8"
-          >
-            <h2 className="text-2xl font-semibold text-slate-900 mb-6 flex items-center gap-3">
-              <Trophy className="text-amber-500" size={28} />
-              Achievements & Awards
-            </h2>
-            <motion.div
-              variants={staggerContainer}
-              className="grid sm:grid-cols-2 gap-3"
-            >
-              {achievements.map((achievement) => (
-                <AchievementCard key={achievement.title} achievement={achievement} />
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* Projects & Research */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-8"
-          >
-            <h2 className="text-2xl font-semibold text-slate-900 mb-6 flex items-center gap-3">
-              <Rocket className="text-purple-600" size={28} />
-              Projects & Research
-            </h2>
-            <p className="text-slate-500 mb-6">
-              Applying mathematical modeling, data analysis, and engineering to solve real-world challenges.
-            </p>
-            <motion.div
-              variants={staggerContainer}
-              className="grid sm:grid-cols-2 gap-6"
-            >
-              {projects.map((project) => (
-                <ProjectCard key={project.title} project={project} />
-              ))}
-            </motion.div>
           </motion.div>
 
           {/* Contact */}
