@@ -15,6 +15,7 @@ const SITE = 'https://www.aryanayyanger.com';
 const staticUrls = [
   `${SITE}/`,
   `${SITE}/articles`,
+  `${SITE}/practice`,
   `${SITE}/about`,
   `${SITE}/contact`,
 ];

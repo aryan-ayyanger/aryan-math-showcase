@@ -61,3 +61,68 @@ body {
   opacity: 0.5;
 }
 
+/* LaTeX-lite rendering (see src/lib/mathText.tsx) — no external math library. */
+.ba-math,
+.ba-math-display {
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
+.ba-math-display {
+  display: block;
+  margin: 0.5em 0;
+  text-align: center;
+}
+
+.ba-text {
+  font-style: normal;
+}
+
+.ba-frac {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  text-align: center;
+  margin: 0 0.15em;
+  font-size: 0.85em;
+  line-height: 1.15;
+}
+
+.ba-frac .ba-num {
+  padding: 0 0.2em;
+  border-bottom: 1px solid currentColor;
+}
+
+.ba-frac .ba-den {
+  padding: 0 0.2em;
+}
+
+.ba-binom {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.1em;
+}
+
+.ba-binom-inner .ba-num,
+.ba-binom-inner .ba-den {
+  border-bottom: none;
+}
+
+.ba-sqrt {
+  white-space: nowrap;
+}
+
+.ba-sqrt-index {
+  font-size: 0.65em;
+  margin-right: -0.3em;
+}
+
+.ba-sqrt-content {
+  padding: 0 0.2em;
+  border-top: 1px solid currentColor;
+}
+
+.ba-overline {
+  text-decoration: overline;
+}
+

@@ -1,10 +1,12 @@
-import type { ComponentType } from 'react';
+import type { ReactNode } from 'react';
 import { Lightbulb, Triangle } from 'lucide-react';
 import { ModulusIcon, AlgebraIcon } from '../components/MathIcons';
 
 export interface MathTopic {
   name: string;
-  icon: ComponentType<{ size?: number; className?: string }>;
+  // A plain call signature (not React.ComponentType) avoids propTypes
+  // assignability conflicts between lucide-react icons and custom SVG icons.
+  icon: (props: { size?: number; className?: string }) => ReactNode;
   description: string;
 }
 
