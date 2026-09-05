@@ -1,1 +1,63 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Source Serif 4", "Source Serif Pro", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-display: "Fraunces", "Source Serif 4", Georgia, Cambria, "Times New Roman", Times, serif;
+
+  --color-paper: #ffffff;
+  --color-paper-alt: #f4f6fb;
+  --color-ink: #101828;
+  --color-muted: #475467;
+  --color-rule: #e4e7ec;
+  --color-primary: #16225c;
+  --color-primary-soft: #2a3b7c;
+  --color-accent: #c8842a;
+  --color-accent-soft: #e0a24f;
+  --color-secondary: #0f6d5c;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background-color: var(--color-paper);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+  font-feature-settings: "kern", "liga", "onum";
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-feature-settings: "kern", "liga";
+}
+
+.small-caps {
+  font-variant: all-small-caps;
+  letter-spacing: 0.08em;
+}
+
+.rule-ornament {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-accent);
+}
+
+.rule-ornament::before,
+.rule-ornament::after {
+  content: "";
+  height: 1px;
+  width: 2.5rem;
+  background: currentColor;
+  opacity: 0.5;
+}
+

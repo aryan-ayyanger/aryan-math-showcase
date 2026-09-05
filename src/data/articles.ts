@@ -84,9 +84,47 @@ export const articles: Article[] = [
       'Tiered AMC 10/12 problem sets with full solutions',
     ],
     tags: ['Geometry', 'AMC', 'Coordinate Geometry', 'Conics'],
-    readTime: '20 min read',
+    readTime: '10 min read',
     date: 'August 2026',
     pdfPath: '/Coordinate_Geometry.pdf',
+    author: 'Aryan Ayyanger',
+    indexable: true,
+  },
+  {
+    slug: 'polynomials-guide-1-roots-vieta-transformations',
+    title: 'Polynomials Guide #1 – Roots, Vieta, and Transformations',
+    category: 'Algebra',
+    description: 'An AMC 10/12 guide to polynomial roots covering Vieta\'s relations, symmetric expressions, reciprocal roots, and root transformations—with a tiered problem set and full solutions.',
+    topics: [
+      'Fundamental results on polynomial roots',
+      'Vieta\'s relations and symmetric expressions',
+      'Reciprocal roots and reciprocal polynomials',
+      'Transforming roots and palindromic polynomials',
+      'Tiered problem set with solutions, including contest-adapted problems',
+    ],
+    tags: ['Algebra', 'Polynomials', 'Vieta\'s Formulas'],
+    readTime: '15 min read',
+    date: 'September 2026',
+    pdfPath: '/Polynomials%20Guide%201.pdf',
+    author: 'Aryan Ayyanger',
+    indexable: true,
+  },
+  {
+    slug: 'triangles-on-amc-area-lengths-angles',
+    title: 'Triangles on the AMC 10/12 – Guide #1: Area, Lengths, Angles',
+    category: 'Geometry',
+    description: 'An AMC 10/12 guide to triangle geometry covering area and length formulas, cevians and special centers, and triangle trigonometry—with a tiered problem set and full solutions.',
+    topics: [
+      'Basic properties and rules of triangles',
+      'Standard area and length formulas',
+      'Stewart\'s, Ceva\'s, and Menelaus\'s theorems',
+      'Law of Sines, Law of Cosines, and trig identities',
+      'Subdivided area ratios and a tiered problem set with solutions',
+    ],
+    tags: ['Geometry', 'AMC', 'Triangles', 'Trigonometry'],
+    readTime: '18 min read',
+    date: 'September 2026',
+    pdfPath: '/Triangles_on_AMC_Area,Lengths,Angles.pdf',
     author: 'Aryan Ayyanger',
     indexable: true,
   },
@@ -103,3 +141,21 @@ export const articles: Article[] = [
     comingSoon: true,
   },
 ];
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+function parseArticleDate(date: string): number {
+  const [month, year] = date.split(' ');
+  const monthIndex = MONTHS.indexOf(month);
+  if (monthIndex === -1 || !year) return -Infinity;
+  return new Date(Number(year), monthIndex).getTime();
+}
+
+// Latest published date first; comingSoon articles always sort to the bottom.
+export const sortedArticles: Article[] = [...articles].sort((a, b) => {
+  if (a.comingSoon !== b.comingSoon) return a.comingSoon ? 1 : -1;
+  return parseArticleDate(b.date) - parseArticleDate(a.date);
+});

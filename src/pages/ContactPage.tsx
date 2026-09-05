@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { Mail, Linkedin, ChevronRight, MapPin } from 'lucide-react';
 import { profile } from '../data/profile';
-import { useSEO } from '../lib/seo';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -44,12 +43,6 @@ function ContactLink({ href, icon, label, value, iconBgClass, iconHoverBgClass }
 }
 
 export default function ContactPage(): JSX.Element {
-  useSEO({
-    title: 'Contact | Aryan Ayyanger',
-    description: 'Get in touch with Aryan Ayyanger \u2014 competitive math student and author of olympiad mathematics articles and resources.',
-    canonical: 'https://www.aryanayyanger.com/contact',
-  });
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -86,7 +79,7 @@ export default function ContactPage(): JSX.Element {
                 />
 
                 <ContactLink
-                  href={profile.linkedin}
+                  href="#"
                   icon={<Linkedin size={24} className="text-blue-700 group-hover:text-white" />}
                   label="LinkedIn"
                   value={profile.linkedin}

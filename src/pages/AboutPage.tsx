@@ -1,100 +1,69 @@
-import { motion } from 'framer-motion';
-import { MapPin, Mail, Linkedin, GraduationCap } from 'lucide-react';
+import { MapPin, Mail, Linkedin } from 'lucide-react';
 import { profile } from '../data/profile';
-import { useSEO } from '../lib/seo';
-
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-};
 
 export default function AboutPage(): JSX.Element {
-  useSEO({
-    title: 'About Aryan Ayyanger | Math Portfolio',
-    description: 'Aryan Ayyanger is a high school student, 2\u00d7 AIME qualifier, and author of olympiad math articles covering Number Theory, Combinatorics, and Algebra.',
-    canonical: 'https://www.aryanayyanger.com/about',
-  });
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-        >
-          {/* Header */}
-          <motion.div variants={fadeInUp} className="text-center mb-12">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                {profile.name}
-              </span>
-            </h1>
-            <div className="flex items-center justify-center gap-2 text-slate-500">
-              <MapPin size={18} />
-              <span>{profile.location}</span>
-            </div>
-          </motion.div>
+    <div className="pb-24">
+      <section className="bg-[var(--color-primary)] pt-32 pb-16">
+        <div className="max-w-3xl mx-auto px-6">
+          <p className="small-caps text-[11px] text-[var(--color-accent-soft)] mb-3">About the Author</p>
+          <h1 className="font-display text-2xl sm:text-3xl text-white tracking-tight mb-4">
+            {profile.name}
+          </h1>
+          <div className="flex items-center gap-2 text-sm text-white/70">
+            <MapPin size={14} />
+            <span>{profile.location}</span>
+          </div>
+        </div>
+      </section>
 
-          {/* Bio Section */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-8"
-          >
-            <h2 className="text-2xl font-semibold text-slate-900 mb-4 flex items-center gap-3">
-              <GraduationCap className="text-blue-600" size={28} />
-              About Me
-            </h2>
-            <p className="text-slate-600 leading-relaxed mb-4">
-              I'm Aryan Ayyanger, a high school student deeply passionate about competitive mathematics
-              and its applications in solving real-world problems. Beyond competitions, I use mathematical
-              modeling and data analysis to tackle meaningful challenges in science and engineering.
+      <div className="max-w-3xl mx-auto px-6">
+        <section className="bg-white p-6 rounded-2xl border border-[var(--color-rule)] shadow-sm mt-6 mb-5">
+          <div className="text-base leading-[1.6] text-slate-800 space-y-3">
+            <p>
+              I&rsquo;m Aryan Ayyanger, a high school student deeply passionate
+              about competitive mathematics and its applications in solving
+              real-world problems. Beyond competitions, I use mathematical
+              modeling and data analysis to tackle meaningful challenges in
+              science and engineering.
             </p>
-            <p className="text-slate-600 leading-relaxed">
-              Competitively, I'm a 2× AIME Qualifier, 2× MathCON Finalist, Genius Olympiad Science Fair
-              Finalist, and have placed 2nd at both the Texas A&M Math Contest (Power Team) and the
-              University of Houston Physics Contest, among other state-level awards.
+            <p>
+              Competitively, I&rsquo;m a 2&times; AIME Qualifier, 2&times; MathCON
+              Finalist, Genius Olympiad Science Fair Finalist, and have
+              placed 2nd at both the Texas A&amp;M Math Contest (Power Team)
+              and the University of Houston Physics Contest, among other
+              state-level awards.
             </p>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Contact */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center"
-          >
-            <h2 className="text-2xl font-semibold text-slate-900 mb-4">Let's Connect</h2>
-            <p className="text-slate-500 mb-6">
-              Interested in discussing math, research collaborations, or just want to say hi?
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href={`mailto:${profile.email}`}
-                className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-              >
-                <Mail size={20} />
-                Email Me
-              </a>
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-colors"
-              >
-                <Linkedin size={20} />
-                LinkedIn
-              </a>
-            </div>
-          </motion.div>
-        </motion.div>
+        <section className="bg-white p-8 rounded-3xl border border-[var(--color-rule)] shadow-sm text-center">
+          <h2 className="small-caps text-xs text-[var(--color-primary)] font-semibold mb-4">Let&rsquo;s Connect</h2>
+          <p className="text-slate-600 leading-relaxed mb-6 max-w-xl mx-auto">
+            Interested in discussing math, research collaborations, or just want to say hi?
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <a
+              href={`mailto:${profile.email}`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] text-white font-medium rounded-lg hover:bg-[var(--color-primary-soft)] transition-colors"
+            >
+              <Mail size={14} />
+              {profile.email}
+            </a>
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-[var(--color-rule)] text-slate-700 font-medium rounded-lg hover:border-[var(--color-primary)]/40 transition-colors"
+            >
+              <Linkedin size={14} />
+              LinkedIn
+            </a>
+          </div>
+        </section>
       </div>
     </div>
   );
 }
+
+

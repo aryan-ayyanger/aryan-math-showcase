@@ -22,7 +22,7 @@ export default function App(): JSX.Element {
   return (
     <Router>
       <AnalyticsTracker />
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-[var(--color-paper)]">
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
