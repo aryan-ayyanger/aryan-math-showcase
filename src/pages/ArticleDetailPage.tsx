@@ -4,7 +4,7 @@ import { articles } from '../data/articles';
 import { useSEO } from '../lib/seo';
 import { getCategoryColor } from '../lib/categoryColors';
 
-const SITE = 'https://betweenthesteps.com';
+const SITE = 'https://www.betweenthesteps.com';
 
 export default function ArticleDetailPage(): JSX.Element {
   const { slug } = useParams<{ slug: string }>();
