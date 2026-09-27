@@ -14,9 +14,6 @@ function AnalyticsTracker(): JSX.Element | null {
 
   useEffect(() => {
     initAnalytics();
-  }, []);
-
-  useEffect(() => {
     trackPageView(`${location.pathname}${location.search}`);
   }, [location.pathname, location.search]);
 
