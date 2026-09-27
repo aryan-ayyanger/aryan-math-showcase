@@ -1,24 +1,4 @@
 {
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "aryanayyanger.com" }],
-      "destination": "https://betweenthesteps.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.aryanayyanger.com" }],
-      "destination": "https://betweenthesteps.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.betweenthesteps.com" }],
-      "destination": "https://betweenthesteps.com/:path*",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/(.*)",
