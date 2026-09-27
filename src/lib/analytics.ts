@@ -24,7 +24,7 @@ export function initAnalytics(): void {
 
   // Configure Google Analytics
   window.gtag('js', new Date());
-  window.gtag('config', measurementId, { send_page_view: false });
+  window.gtag('config', measurementId);
 
   // Then load Google's script
   const script = document.createElement('script');

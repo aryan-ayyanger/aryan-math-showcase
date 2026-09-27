@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
@@ -11,9 +11,18 @@ import { initAnalytics, trackPageView } from './lib/analytics';
 
 function AnalyticsTracker(): JSX.Element | null {
   const location = useLocation();
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     initAnalytics();
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     trackPageView(`${location.pathname}${location.search}`);
   }, [location.pathname, location.search]);
 
