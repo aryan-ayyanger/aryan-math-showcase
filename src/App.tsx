@@ -7,10 +7,14 @@ import ArticlesPage from './pages/ArticlesPage';
 import ArticleDetailPage from './pages/ArticleDetailPage';
 import PracticeGeneratorPage from './pages/PracticeGeneratorPage';
 import ContactPage from './pages/ContactPage';
-import { trackPageView } from './lib/analytics';
+import { initAnalytics, trackPageView } from './lib/analytics';
 
 function AnalyticsTracker(): JSX.Element | null {
   const location = useLocation();
+
+  useEffect(() => {
+    initAnalytics();
+  }, []);
 
   useEffect(() => {
     trackPageView(`${location.pathname}${location.search}`);

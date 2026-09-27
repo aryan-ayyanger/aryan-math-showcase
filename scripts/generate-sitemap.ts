@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // Dynamic import so tsx resolves the TypeScript source directly.
 const { articles } = await import('../src/data/articles.ts');
 
-const SITE = 'https://www.aryanayyanger.com';
+const SITE = 'https://betweenthesteps.com';
 
 // lastmod/changefreq/priority are omitted — Google largely ignores them
 // and a build-date lastmod on every page is misleading.
